@@ -1,8 +1,12 @@
-### `npm start`
+### checkout 後
+`npm run install`
 
-### `npm test`
+### 環境起動時
+`npm start`
 
-### `npm run build`
+### テスト実施時
+`npm test`
 
-### `npm run eject`
+### ビルドする時
+`npm run build`
 
