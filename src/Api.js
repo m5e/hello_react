@@ -16,12 +16,23 @@ class Api extends Component {
   }
 
   searchImagePath() {
+    let reqestTimeStamp = 0;
+    let responseTimeStamp = 0;
+
     if (this.state.value === "") {
       console.log("入力欄が空欄です");
       return;
     } else {
       // 初期化
       let result = {};
+
+      // タイムスタンプ取得
+      const date = new Date();
+      reqestTimeStamp = `${date.getFullYear() % 100}${
+        date.getMonth() + 1 > 9 ? date.getMonth() : "0" + (date.getMonth() + 1)
+      }${date.getDate() > 9 ? date.getDate() : "0" + date.getDate()}${
+        date.getHours() > 9 ? date.getHours() : "0" + date.getHours()
+      }${date.getMinutes() > 9 ? date.getMinutes() : "0" + date.getMinutes()}`;
 
       axios
         .post("http://example.com/", {
@@ -34,9 +45,19 @@ class Api extends Component {
           },
         })
         .then((res) => {
-          console.log("success");
           // ここで返却値を変数 reault に格納
           // result = res;
+
+          const date = new Date();
+          responseTimeStamp = `${date.getFullYear() % 100}${
+            date.getMonth() + 1 > 9
+              ? date.getMonth()
+              : "0" + (date.getMonth() + 1)
+          }${date.getDate() > 9 ? date.getDate() : "0" + date.getDate()}${
+            date.getHours() > 9 ? date.getHours() : "0" + date.getHours()
+          }${
+            date.getMinutes() > 9 ? date.getMinutes() : "0" + date.getMinutes()
+          }`;
 
           result = {
             success: true,
@@ -61,13 +82,15 @@ class Api extends Component {
                   result.estimated_data !== {}
                     ? result.estimated_data.confidence
                     : null,
+                request_timestamp: reqestTimeStamp,
+                response_timestamp: responseTimeStamp,
               },
             })
             .then((res) => {
               console.log("success");
             })
             .catch((err) => {
-              console.log("err", err.response);
+              console.log("err", JSON.stringify(err.response));
             });
         })
         .catch((err) => {
@@ -92,6 +115,18 @@ class Api extends Component {
             },
           };
 
+          // タイムスタンプ取得
+          const date = new Date();
+          responseTimeStamp = `${date.getFullYear() % 100}${
+            date.getMonth() + 1 > 9
+              ? date.getMonth()
+              : "0" + (date.getMonth() + 1)
+          }${date.getDate() > 9 ? date.getDate() : "0" + date.getDate()}${
+            date.getHours() > 9 ? date.getHours() : "0" + date.getHours()
+          }${
+            date.getMinutes() > 9 ? date.getMinutes() : "0" + date.getMinutes()
+          }`;
+
           const isEstimated_dataChildren =
             Object.keys(result.estimated_data).length > 0;
 
@@ -110,6 +145,8 @@ class Api extends Component {
                 message: result.message,
                 class: desidedClass,
                 confidence: desidedConfidence,
+                request_timestamp: reqestTimeStamp,
+                response_timestamp: responseTimeStamp,
               },
             })
             .catch((err) => {

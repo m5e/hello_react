@@ -50,7 +50,6 @@ app.use((req, res, next) => {
 app.use(bodyParser.json());
 
 app.get("/test", (req, res) => {
-  console.log("11111", req.query);
   if (!req.query.confidence) {
     const sql =
       "insert into ai_analysis_log(image_path, success, message, class, confidence, request_timestamp, response_timestamp) values(" +
@@ -59,12 +58,11 @@ app.get("/test", (req, res) => {
       `'${req.query.success}'` +
       "," +
       `'${req.query.message}'` +
-      ", null, null, null, null)";
-    // console.log("sql", sql);
+      ", null, null," +
+      `${req.query.request_timestamp}, ${req.query.response_timestamp})`;
 
     executeQuery(sql);
   } else {
-    console.log("22222", req.query);
     const sql =
       "insert into ai_analysis_log(image_path, success, message, class, confidence, request_timestamp, response_timestamp) values(" +
       `'${req.query.image_path}'` +
@@ -77,8 +75,7 @@ app.get("/test", (req, res) => {
       "," +
       `'${req.query.confidence}'` +
       "," +
-      "null, null)";
-    // console.log("sql", sql);
+      `${req.query.request_timestamp}, ${req.query.response_timestamp})`;
 
     executeQuery(sql);
   }
