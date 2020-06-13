@@ -7,7 +7,7 @@ class Api extends Component {
 
     this.state = { value: "" };
 
-    this.saveImageSearchResults = this.saveImageSearchResults.bind(this);
+    this.searchImagePath = this.searchImagePath.bind(this);
     this.handleChange = this.handleChange.bind(this);
   }
 
@@ -15,7 +15,7 @@ class Api extends Component {
     this.setState({ value: event.target.value });
   }
 
-  saveImageSearchResults() {
+  searchImagePath() {
     if (this.state.value === "") {
       console.log("入力欄が空欄です");
       return;
@@ -34,17 +34,18 @@ class Api extends Component {
           },
         })
         .then((res) => {
-          console.log("post method success");
-          result = res;
+          console.log("success");
+          // ここで返却値を変数 reault に格納
+          // result = res;
 
-          // result = {
-          //   success: true,
-          //   message: "success",
-          //   estimated_data: {
-          //     class: 3,
-          //     confidence: 0.8683,
-          //   },
-          // };
+          result = {
+            success: true,
+            message: "success",
+            estimated_data: {
+              class: 3,
+              confidence: 0.8683,
+            },
+          };
 
           axios
             .get("http://localhost:3001/test", {
@@ -62,14 +63,18 @@ class Api extends Component {
                     : null,
               },
             })
+            .then((res) => {
+              console.log("success");
+            })
             .catch((err) => {
               console.log("err", err.response);
             });
         })
         .catch((err) => {
-          console.log("post method err", err.response);
+          console.log("err", JSON.stringify(err.response));
           // return;
 
+          //✖
           // result = {
           //   image_path: this.state.value,
           //   success: false,
@@ -77,20 +82,34 @@ class Api extends Component {
           //   estimated_data: {},
           // };
 
+          //〇
+          result = {
+            success: true,
+            message: "success",
+            estimated_data: {
+              class: 3,
+              confidence: 0.8683,
+            },
+          };
+
+          const isEstimated_dataChildren =
+            Object.keys(result.estimated_data).length > 0;
+
+          const desidedClass = isEstimated_dataChildren
+            ? result.estimated_data.class
+            : null;
+          const desidedConfidence = isEstimated_dataChildren
+            ? result.estimated_data.confidence
+            : null;
+
           axios
             .get("http://localhost:3001/test", {
               params: {
                 image_path: this.state.value,
                 success: result.success,
                 message: result.message,
-                class:
-                  result.estimated_data !== {}
-                    ? result.estimated_data.class
-                    : null,
-                confidence:
-                  result.estimated_data !== {}
-                    ? result.estimated_data.confidence
-                    : null,
+                class: desidedClass,
+                confidence: desidedConfidence,
               },
             })
             .catch((err) => {
@@ -108,9 +127,7 @@ class Api extends Component {
           value={this.state.value}
           onChange={this.handleChange}
         ></input>
-        <button class="" onClick={this.saveImageSearchResults}>
-          Click!
-        </button>
+        <button onClick={this.searchImagePath}>Click Me</button>
       </div>
     );
   }

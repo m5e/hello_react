@@ -1,7 +1,6 @@
 const express = require("express");
 const mysql = require("mysql");
 const bodyParser = require("body-parser");
-const { query } = require("express");
 
 // port 番号
 const PORT = 3001;
@@ -20,7 +19,7 @@ connection.connect(function (err) {
   console.log("You are now connected with mysql database...");
 });
 
-// SQL の実行
+// SQLの実行
 function executeQuery(sql) {
   connection
     .query(sql)
@@ -51,7 +50,8 @@ app.use((req, res, next) => {
 app.use(bodyParser.json());
 
 app.get("/test", (req, res) => {
-  if (req.query.confidence === null) {
+  console.log("11111", req.query);
+  if (!req.query.confidence) {
     const sql =
       "insert into ai_analysis_log(image_path, success, message, class, confidence, request_timestamp, response_timestamp) values(" +
       `'${req.query.image_path}'` +
@@ -60,9 +60,11 @@ app.get("/test", (req, res) => {
       "," +
       `'${req.query.message}'` +
       ", null, null, null, null)";
+    // console.log("sql", sql);
 
     executeQuery(sql);
   } else {
+    console.log("22222", req.query);
     const sql =
       "insert into ai_analysis_log(image_path, success, message, class, confidence, request_timestamp, response_timestamp) values(" +
       `'${req.query.image_path}'` +
@@ -71,11 +73,12 @@ app.get("/test", (req, res) => {
       "," +
       `'${req.query.message}'` +
       "," +
-      `'${req.query.class}'` +
+      `${req.query.class}` +
       "," +
       `'${req.query.confidence}'` +
       "," +
       "null, null)";
+    // console.log("sql", sql);
 
     executeQuery(sql);
   }
