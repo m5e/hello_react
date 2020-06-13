@@ -59,15 +59,6 @@ class Api extends Component {
             date.getMinutes() > 9 ? date.getMinutes() : "0" + date.getMinutes()
           }`;
 
-          result = {
-            success: true,
-            message: "success",
-            estimated_data: {
-              class: 3,
-              confidence: 0.8683,
-            },
-          };
-
           axios
             .get("http://localhost:3001/test", {
               params: {
@@ -161,8 +152,10 @@ class Api extends Component {
       <div>
         <input
           type="text"
+          class="inputItem"
           value={this.state.value}
           onChange={this.handleChange}
+          placeholder="ここに画像のパスを入力してください"
         ></input>
         <button onClick={this.searchImagePath}>Click Me</button>
       </div>
