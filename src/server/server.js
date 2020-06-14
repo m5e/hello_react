@@ -69,9 +69,9 @@ app.get("/test", (req, res) => {
   executeQuery(sql);
 });
 
-app.post("/test2", (req, res) => {
-  res.send();
-});
+// app.post("/test2", (req, res) => {
+//   res.send();
+// });
 
 // サーバ起動
 app.listen(PORT, () => console.log("Listening on port 3001"));

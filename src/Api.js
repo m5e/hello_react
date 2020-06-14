@@ -37,8 +37,8 @@ class Api extends Component {
       }${date.getMinutes() > 9 ? date.getMinutes() : "0" + date.getMinutes()}`;
 
       axios
-        // .post("http://example.com/", {
-        .post("http://localhost:3001/test2", {
+        .post("http://example.com/", {
+          // .post("http://localhost:3001/test2", {
           params: {
             imagePath: this.state.value,
             headers: {
@@ -59,14 +59,14 @@ class Api extends Component {
           // };
 
           //〇
-          result = {
-            success: true,
-            message: "success",
-            estimated_data: {
-              class: 3,
-              confidence: 0.8683,
-            },
-          };
+          // result = {
+          //   success: true,
+          //   message: "success",
+          //   estimated_data: {
+          //     class: 3,
+          //     confidence: 0.8683,
+          //   },
+          // };
 
           // タイムスタンプ取得
           // 年のみ下二桁表示
