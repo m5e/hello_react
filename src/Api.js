@@ -9,12 +9,42 @@ class Api extends Component {
 
     this.searchImagePath = this.searchImagePath.bind(this);
     this.handleChange = this.handleChange.bind(this);
+    this.getTimestamp = this.getTimestamp.bind(this);
   }
 
   handleChange(event) {
     this.setState({ value: event.target.value });
   }
 
+  // タイムスタンプ取得
+  // 年のみ下二桁表示
+  // 例：2020年6月13日10時30分の場合 ⇒ 2006131030
+  getTimestamp() {
+    const date = new Date();
+    const currentTimeStamp = `${date.getFullYear() % 100}${
+      date.getMonth() + 1 > 9 ? date.getMonth() : "0" + (date.getMonth() + 1)
+    }${date.getDate() > 9 ? date.getDate() : "0" + date.getDate()}${
+      date.getHours() > 9 ? date.getHours() : "0" + date.getHours()
+    }${date.getMinutes() > 9 ? date.getMinutes() : "0" + date.getMinutes()}`;
+
+    return currentTimeStamp;
+  }
+
+  /**
+   * 特定の画像ファイルパスをもとにその画像が所属するClassを返却するAPIにリクエストを投げます。\
+   * そして、そのレスポンスをDBに保存する処理を行うメソッドです。
+   *
+   * チェックアウト直後のソースは本番用の実装になっており、動作確認を行う際には事前準備として下記操作が必要になります。\
+   * 1. 64 行目をコメントアウトし、65 行目のコメントアウトを外す (動作確認用のAPIのURLに変更)\
+   * 2. レスポンスが成功していた場合と失敗していた場合でコメントアウトのつけ外しを行う。\
+   * 　 * レスポンスが成功していた場合の処理を確認する場合\
+   *      ⇒ 86 ~ 93 行目のコメントアウトを外す。\
+   *         78 ~ 83 行目をコメントアウトする。
+   *
+   *   * レスポンスが失敗していた場合の処理を確認する場合\
+   *      ⇒ 78 ~ 83 行目のコメントアウトを外す。\
+   *         86 ~ 93 行目をコメントアウトする。
+   */
   searchImagePath() {
     let reqestTimeStamp = 0;
     let responseTimeStamp = 0;
@@ -27,15 +57,9 @@ class Api extends Component {
       let result = {};
 
       // タイムスタンプ取得
-      // 年のみ下二桁表示
-      // 例：2020年6月13日10時30分の場合 ⇒ 2006131030
-      const date = new Date();
-      reqestTimeStamp = `${date.getFullYear() % 100}${
-        date.getMonth() + 1 > 9 ? date.getMonth() : "0" + (date.getMonth() + 1)
-      }${date.getDate() > 9 ? date.getDate() : "0" + date.getDate()}${
-        date.getHours() > 9 ? date.getHours() : "0" + date.getHours()
-      }${date.getMinutes() > 9 ? date.getMinutes() : "0" + date.getMinutes()}`;
+      reqestTimeStamp = this.getTimestamp();
 
+      // 画像ファイルの所属有無を検索するAPIの実行
       axios
         .post("http://example.com/", {
           // .post("http://localhost:3001/test2", {
@@ -50,7 +74,7 @@ class Api extends Component {
         .then((res) => {
           result = res;
 
-          //✖
+          // リクエストが失敗していた場合のレスポンス
           // result = {
           //   image_path: this.state.value,
           //   success: false,
@@ -58,7 +82,7 @@ class Api extends Component {
           //   estimated_data: {},
           // };
 
-          //〇
+          // リクエストが成功していた場合のレスポンス
           // result = {
           //   success: true,
           //   message: "success",
@@ -69,18 +93,7 @@ class Api extends Component {
           // };
 
           // タイムスタンプ取得
-          // 年のみ下二桁表示
-          // 例：2020年6月13日10時30分の場合 ⇒ 2006131030
-          const date = new Date();
-          responseTimeStamp = `${date.getFullYear() % 100}${
-            date.getMonth() + 1 > 9
-              ? date.getMonth()
-              : "0" + (date.getMonth() + 1)
-          }${date.getDate() > 9 ? date.getDate() : "0" + date.getDate()}${
-            date.getHours() > 9 ? date.getHours() : "0" + date.getHours()
-          }${
-            date.getMinutes() > 9 ? date.getMinutes() : "0" + date.getMinutes()
-          }`;
+          responseTimeStamp = this.getTimestamp();
 
           const isEstimated_dataChildren =
             Object.keys(result.estimated_data).length > 0;
@@ -92,6 +105,7 @@ class Api extends Component {
             ? result.estimated_data.confidence
             : null;
 
+          // レスポンスをDBに保存するAPIの実行
           axios
             .get("http://localhost:3001/test", {
               params: {
@@ -110,7 +124,6 @@ class Api extends Component {
         })
         .catch((err) => {
           console.log("err", JSON.stringify(err.response));
-          return;
         });
     }
   }
