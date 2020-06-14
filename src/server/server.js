@@ -49,35 +49,24 @@ app.use((req, res, next) => {
 app.use(bodyParser.json());
 
 app.get("/test", (req, res) => {
-  if (!req.query.confidence) {
-    const sql =
-      "insert into ai_analysis_log(image_path, success, message, class, confidence, request_timestamp, response_timestamp) values(" +
-      `'${req.query.image_path}'` +
-      "," +
-      `'${req.query.success}'` +
-      "," +
-      `'${req.query.message}'` +
-      ", null, null," +
-      `${req.query.request_timestamp}, ${req.query.response_timestamp})`;
+  const className = req.query.confidence ? req.query.class : null;
+  const confidence = req.query.confidence ? req.query.confidence : null;
 
-    executeQuery(sql);
-  } else {
-    const sql =
-      "insert into ai_analysis_log(image_path, success, message, class, confidence, request_timestamp, response_timestamp) values(" +
-      `'${req.query.image_path}'` +
-      "," +
-      `'${req.query.success}'` +
-      "," +
-      `'${req.query.message}'` +
-      "," +
-      `${req.query.class}` +
-      "," +
-      `'${req.query.confidence}'` +
-      "," +
-      `${req.query.request_timestamp}, ${req.query.response_timestamp})`;
+  const sql =
+    "insert into ai_analysis_log(image_path, success, message, class, confidence, request_timestamp, response_timestamp) values(" +
+    `'${req.query.image_path}'` +
+    "," +
+    `'${req.query.success}'` +
+    "," +
+    `'${req.query.message}'` +
+    "," +
+    `${className}` +
+    "," +
+    `${confidence}` +
+    "," +
+    `${req.query.request_timestamp}, ${req.query.response_timestamp})`;
 
-    executeQuery(sql);
-  }
+  executeQuery(sql);
 });
 
 app.post("/test2", (req, res) => {
