@@ -31,7 +31,6 @@ function executeQuery(sql) {
     })
     .on("end", function () {
       console.log("end");
-      connection.destroy();
     });
 }
 
@@ -79,6 +78,10 @@ app.get("/test", (req, res) => {
 
     executeQuery(sql);
   }
+});
+
+app.post("/test2", (req, res) => {
+  res.send();
 });
 
 // サーバ起動

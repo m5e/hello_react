@@ -27,6 +27,8 @@ class Api extends Component {
       let result = {};
 
       // タイムスタンプ取得
+      // 年のみ下二桁表示
+      // 例：2020年6月13日10時30分の場合 ⇒ 2006131030
       const date = new Date();
       reqestTimeStamp = `${date.getFullYear() % 100}${
         date.getMonth() + 1 > 9 ? date.getMonth() : "0" + (date.getMonth() + 1)
@@ -35,7 +37,8 @@ class Api extends Component {
       }${date.getMinutes() > 9 ? date.getMinutes() : "0" + date.getMinutes()}`;
 
       axios
-        .post("http://example.com/", {
+        // .post("http://example.com/", {
+        .post("http://localhost:3001/test2", {
           params: {
             imagePath: this.state.value,
             headers: {
@@ -45,48 +48,7 @@ class Api extends Component {
           },
         })
         .then((res) => {
-          // ここで返却値を変数 reault に格納
-          // result = res;
-
-          const date = new Date();
-          responseTimeStamp = `${date.getFullYear() % 100}${
-            date.getMonth() + 1 > 9
-              ? date.getMonth()
-              : "0" + (date.getMonth() + 1)
-          }${date.getDate() > 9 ? date.getDate() : "0" + date.getDate()}${
-            date.getHours() > 9 ? date.getHours() : "0" + date.getHours()
-          }${
-            date.getMinutes() > 9 ? date.getMinutes() : "0" + date.getMinutes()
-          }`;
-
-          axios
-            .get("http://localhost:3001/test", {
-              params: {
-                image_path: this.state.value,
-                success: result.success,
-                message: result.message,
-                class:
-                  result.estimated_data !== {}
-                    ? result.estimated_data.class
-                    : null,
-                confidence:
-                  result.estimated_data !== {}
-                    ? result.estimated_data.confidence
-                    : null,
-                request_timestamp: reqestTimeStamp,
-                response_timestamp: responseTimeStamp,
-              },
-            })
-            .then((res) => {
-              console.log("success");
-            })
-            .catch((err) => {
-              console.log("err", JSON.stringify(err.response));
-            });
-        })
-        .catch((err) => {
-          console.log("err", JSON.stringify(err.response));
-          // return;
+          result = res;
 
           //✖
           // result = {
@@ -107,6 +69,8 @@ class Api extends Component {
           };
 
           // タイムスタンプ取得
+          // 年のみ下二桁表示
+          // 例：2020年6月13日10時30分の場合 ⇒ 2006131030
           const date = new Date();
           responseTimeStamp = `${date.getFullYear() % 100}${
             date.getMonth() + 1 > 9
@@ -143,6 +107,10 @@ class Api extends Component {
             .catch((err) => {
               console.log("err", err.response);
             });
+        })
+        .catch((err) => {
+          console.log("err", JSON.stringify(err.response));
+          return;
         });
     }
   }
